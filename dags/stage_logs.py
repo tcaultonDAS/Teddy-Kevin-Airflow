@@ -5,6 +5,7 @@ from airflow.decorators import dag, task
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.contrib.operators.snowflake_operator import SnowflakeOperator
 from datetime import datetime, timedelta
+from airflow.sensors.s3_key_sensor import S3KeySensor
 
 # custom utils
 from utils.job_config import JobConfig
@@ -40,6 +41,14 @@ def stage_simple_dag():
     # staging ad logs hourly
     for table in JOB_ARGS["tables"]:
 
+
+        stage_adlogs_check = S3KeySensor(
+            task_id = 'waiting_for_data_{}'.format(table),
+            bucket_key = 'raw-ingester-out/manifests/{}/20190704/15/completed.manifest'.format(table),
+            bucket_name = 'das42-airflow-training',
+            aws_conn_id = 'aws_airflow')
+
+
         stage_adlogs_hourly_job = SnowflakeOperator(
             task_id="stage_logs_{}_hourly".format(table),
             snowflake_conn_id=SF_CONN_ID,
@@ -54,6 +63,6 @@ def stage_simple_dag():
             trigger_rule='all_done'
         )
 
-        stage_adlogs_hourly_job >> stage_finish
+        stage_adlogs_check >> stage_adlogs_hourly_job >> stage_finish
 
 stage_simple_dag = stage_simple_dag()
