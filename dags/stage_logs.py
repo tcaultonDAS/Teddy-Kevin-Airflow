@@ -20,6 +20,7 @@ SF_WAREHOUSE = JOB_ARGS["snowflake"]["warehouse"]
 SF_DATABASE = JOB_ARGS["snowflake"]["database"]
 
 stage_sql_path = JOB_ARGS['stage_sql_path']
+transform_sql_path = JOB_ARGS['transform_sql_path']
 
 # create DAG
 dag_id = 'stage_logs'
@@ -63,6 +64,22 @@ def stage_simple_dag():
             trigger_rule='all_done'
         )
 
-        stage_adlogs_check >> stage_adlogs_hourly_job >> stage_finish
+        stage_adlogs_transform = SnowflakeOperator(
+            task_id = "stage_transform_{}".format(table),
+            snowflake_conn_id=SF_CONN_ID,
+            warehouse=SF_WAREHOUSE,
+            database=SF_DATABASE,
+            sql=f'sql/{transform_sql_path}/transform_{table}.sql',
+            params={
+                "env": ENV,
+                "team_name": TEAM_NAME
+            },
+            autocommit=True,
+            trigger_rule='all_done'
+        )
+
+
+
+        stage_adlogs_check >> stage_adlogs_hourly_job >> stage_adlogs_transform >> stage_finish
 
 stage_simple_dag = stage_simple_dag()
