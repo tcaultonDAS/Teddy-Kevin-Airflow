@@ -20,9 +20,10 @@ SF_WAREHOUSE = JOB_ARGS["snowflake"]["warehouse"]
 SF_DATABASE = JOB_ARGS["snowflake"]["database"]
 
 stage_sql_path = JOB_ARGS['stage_sql_path']
+transform_sql_path = JOB_ARGS['transform_sql_path']
 
 # create DAG
-dag_id = 'stage_logs'
+dag_id = 'stage_adlogs'
 
 @dag(
 dag_id=dag_id,
@@ -41,8 +42,16 @@ def stage_simple_dag():
     # staging ad logs hourly
     for table in JOB_ARGS["tables"]:
 
+
+        stage_adlogs_check = S3KeySensor(
+            task_id = 'waiting_for_data_{}'.format(table),
+            bucket_key = 'raw-ingester-out/manifests/{}/20190704/15/completed.manifest'.format(table),
+            bucket_name = 'das42-airflow-training',
+            aws_conn_id = 'aws_airflow')
+
+
         stage_adlogs_hourly_job = SnowflakeOperator(
-            task_id="stage_logs_{}_hourly".format(table),
+            task_id="stage_adlogs_{}_hourly".format(table),
             snowflake_conn_id=SF_CONN_ID,
             warehouse=SF_WAREHOUSE,
             database=SF_DATABASE,
@@ -55,8 +64,22 @@ def stage_simple_dag():
             trigger_rule='all_done'
         )
 
+        stage_adlogs_transform = SnowflakeOperator(
+            task_id = "stage_transform_{}".format(table),
+            snowflake_conn_id=SF_CONN_ID,
+            warehouse=SF_WAREHOUSE,
+            database=SF_DATABASE,
+            sql=f'sql/{transform_sql_path}/transform_{table}.sql',
+            params={
+                "env": ENV,
+                "team_name": TEAM_NAME
+            },
+            autocommit=True,
+            trigger_rule='all_done'
+        )
 
 
-        stage_adlogs_hourly_job >>  stage_finish
+
+        stage_adlogs_check >> stage_adlogs_hourly_job >> stage_adlogs_transform >> stage_finish
 
 stage_simple_dag = stage_simple_dag()
