@@ -2,8 +2,6 @@ use warehouse DAS42DEV;
 
 use airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }};
 
-drop table if exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.int;
-
 ---
 
 create table if not exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.int (
@@ -25,6 +23,10 @@ create table if not exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_
   run_datehour bigint
 )
 ;
+
+
+create stream if not exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.int_stream on table airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.int;
+
 
 ---
 
