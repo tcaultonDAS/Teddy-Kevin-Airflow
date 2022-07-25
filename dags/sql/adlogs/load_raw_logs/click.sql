@@ -35,6 +35,9 @@ create table if not exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_
 )
 ;
 
+
+create stream if not exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.click_stream on table airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.click ;
+
 ---
 
 begin name load_rl_click_2019070415;
@@ -45,6 +48,7 @@ begin name load_rl_click_2019070415;
 delete from airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.click
 where run_datehour = 2019070415
 ;
+
 
 ---
 
@@ -99,3 +103,6 @@ or record_type like '#Fields: %'
 ---
 
 commit;
+
+
+

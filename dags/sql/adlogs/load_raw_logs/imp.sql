@@ -41,6 +41,10 @@ create table if not exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_
 )
 ;
 
+
+create stream if not exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.imp_stream on table airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.imp ;
+
+
 ---
 
 begin name load_rl_imp_2019070415;

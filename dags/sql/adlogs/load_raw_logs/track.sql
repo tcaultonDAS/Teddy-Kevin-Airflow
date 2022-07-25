@@ -20,6 +20,9 @@ create table if not exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_
 )
 ;
 
+create stream if not exists airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.track_stream on table airflow_db_{{ params.env }}.raw_stage_{{ params.team_name }}.track;
+
+
 ---
 
 begin name load_rl_track_2019070415;
