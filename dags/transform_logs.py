@@ -40,16 +40,20 @@ def stage_simple_dag():
     stage_finish = DummyOperator(task_id="transform_logs_staging_finish")
 
     # staging ad logs hourly
-    count = 0
-    for path in JOB_ARGS["path"]:
-        dict_path = "{}_tables".format(path)
-        for table in JOB_ARGS[dict_path]:
-            transform_tables = SnowflakeOperator(
-                task_id = "stage_transform_{}_{}".format(table, count),
+    
+    for table in JOB_ARGS["tables"]:
+        
+
+        mylist = []
+
+        for fpath in JOB_ARGS[table]:
+
+            mylist.append(SnowflakeOperator(
+                task_id = "stage_transform_{}_{}".format(table, fpath),
                 snowflake_conn_id=SF_CONN_ID,
                 warehouse=SF_WAREHOUSE,
                 database=SF_DATABASE,
-                sql=f'sql/{path}.sql',
+                sql=f'sql/{JOB_ARGS["home_path"]}/{fpath}.sql',
                 params={
                     "env": ENV,
                     "team_name": TEAM_NAME,
@@ -57,10 +61,14 @@ def stage_simple_dag():
                 },
                 autocommit=True,
                 trigger_rule='all_done'
-            )
+            ))
         
 
-            transform_tables >> stage_finish
-        count += 1
+        for i in range(len(mylist)-1):
+            mylist[i].set_downstream(mylist[i+1])
+
+        mylist[-1].set_downstream(stage_finish)
+
+        
 
 stage_simple_dag = stage_simple_dag()
