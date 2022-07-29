@@ -1,20 +1,29 @@
 schedule_interval: "30 * * * *"
 
-path:
-    - adlogs/log_process/ipn_blacklist
-    - adlogs/log_process/smart_clip_patch
-    - adlogs/log_process/set_interaction_smartclip_placement
-adlogs/log_process/ipn_blacklist_tables:
-    - imp
-    - click
-    - state
-adlogs/log_process/smart_clip_patch_tables:
-    - imp
-    - click
-adlogs/log_process/set_interaction_smartclip_placement_tables:
-    - int
+home_path: 'adlogs/log_process/'
+
 
 parent_directory: 'stage_{}_logs_dev'
 log_path: 'log/*'
 
 
+
+tables:
+    - imp
+    - click
+    - state
+    - int
+
+imp:
+    - ipn_blacklist
+    - smart_clip_patch
+
+state: 
+    - ipn_blacklist
+
+int:
+    - set_interaction_smartclip_placement
+
+click:
+    - ipn_blacklist
+    - smart_clip_patch
