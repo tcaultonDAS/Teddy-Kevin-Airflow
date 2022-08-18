@@ -6,6 +6,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.contrib.operators.snowflake_operator import SnowflakeOperator
 from datetime import datetime, timedelta
 from airflow.sensors.s3_key_sensor import S3KeySensor
+from airflow.operators.python import PythonOperator 
 
 # custom utils
 from utils.job_config import JobConfig
@@ -18,10 +19,16 @@ SF_CONN_ID = JOB_ARGS["snowflake_conn_id"]
 SF_ROLE = JOB_ARGS["snowflake"]["role"]
 SF_WAREHOUSE = JOB_ARGS["snowflake"]["warehouse"]
 SF_DATABASE = JOB_ARGS["snowflake"]["database"]
+aws_bucket_name = JOB_ARGS['aws_bucket_name']
+aws_conn_id = JOB_ARGS['aws_conn_id']
+filters = JOB_ARGS['header_check']['app_live']['filters']
+folder  = JOB_ARGS['folder']
+data_source = JOB_ARGS['data_source']
 
 stage_sql_path = JOB_ARGS['stage_sql_path']
 transform_sql_path = JOB_ARGS['transform_sql_path']
 
+from utils.py_header_check import pyHeaderCheck
 # create DAG
 dag_id = 'stage_adlogs'
 
@@ -38,9 +45,15 @@ tags=["Airflow2.0"], # If set, this tag is shown in the DAG view of the Airflow 
 def stage_simple_dag():
 
     stage_finish = DummyOperator(task_id="adlogs_snowflake_staging_finish")
+    count = 0
 
     # staging ad logs hourly
     for table in JOB_ARGS["tables"]:
+
+        table_column_names = JOB_ARGS[f'{table}_columns']
+
+
+        print(table_column_names)
 
 
         stage_adlogs_check = S3KeySensor(
@@ -48,6 +61,21 @@ def stage_simple_dag():
             bucket_key = 'raw-ingester-out/manifests/{}/20190704/15/completed.manifest'.format(table),
             bucket_name = 'das42-airflow-training',
             aws_conn_id = 'aws_airflow')
+
+
+        stage_adlogs_header_check = PythonOperator(
+            task_id = 'header_check_{}'.format(table),
+            python_callable = pyHeaderCheck,
+            op_kwargs = {
+                'aws_bucket_name' : aws_bucket_name,
+                'filepath' : '{}/{}/*'.format(folder[count],data_source),
+                's3_conn' : aws_conn_id,
+                'table_config' : table,
+                'columns' : table_column_names,
+                'filters' : filters,
+                'source' : data_source
+                }
+            )
 
 
         stage_adlogs_hourly_job = SnowflakeOperator(
@@ -78,8 +106,9 @@ def stage_simple_dag():
             trigger_rule='all_done'
         )
 
+        count += 1
 
+        stage_adlogs_check >> stage_adlogs_header_check >> stage_adlogs_hourly_job >> stage_adlogs_transform >> stage_finish
 
-        stage_adlogs_check >> stage_adlogs_hourly_job >> stage_adlogs_transform >> stage_finish
 
 stage_simple_dag = stage_simple_dag()

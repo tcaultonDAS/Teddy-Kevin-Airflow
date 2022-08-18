@@ -11,3 +11,184 @@ stage_sql_path: adlogs/load_raw_logs
 transform_sql_path: adlogs/transform_raw_logs
 parent_directory: 'stage_{}_logs_dev'
 log_path: 'log/*'
+
+
+aws_bucket_name: 'das42-airflow-training'
+
+folder: 
+    - 'stage_click_logs_dev'
+    - 'stage_imp_logs_dev'
+    - 'stage_info_logs_dev'
+    - 'stage_spot_logs_dev'
+    - 'stage_state_logs_dev'
+    - 'stage_track_logs_dev'
+    - 'stage_int_logs_dev'
+
+data_source: 20190704/15/log
+
+aws_conn_id: 'aws_airflow'
+
+data_source: non_http
+
+header_check:
+    app_live:
+        filters:
+            sanitize_capitalization: True
+            trim_whitespace: True
+            remove_whitespace: True
+            remove_underscores: True
+            ignore_columns: []
+            delimiter: ","
+click_columns:
+    - record_type
+    - date 
+    - time 
+    - idevent_type 
+    - placementid 
+    - ipn 
+    - idcreative 
+    - configuration_id
+    - GUID
+    - iab_flag
+    - ip_address 
+    - rule_match 
+    - custom 
+    - section 
+    - keyword
+    - privacy 
+    - parent_time
+    - device_id 
+    - imp_id
+    - agent_env 
+    - user_agent
+    - impression_guid
+    - unhex_md5_smartclip
+    - idcampaign
+    - c2
+    - c3
+    - file_source
+    - load_timestamp
+    - run_datehour
+
+imp_columns:
+    - record_type
+    - date
+    - time
+    - idevent_type
+    - placementid
+    - ipn
+    - idcreative
+    - config_id
+    - GUID
+    - geo_db
+    - section
+    - iab_flag
+    - ip_address
+    - rule_match
+    - keyword
+    - custom,
+    - privacy
+    - placement_dt
+    - placement_path
+    - creative_dt
+    - domain
+    - parent_time,
+    - device_id
+    - imp_id
+    - agent_env
+    - user_agent
+    - impression_guid
+    - unhex_md5_smartclip
+    - idcampaign
+    - c2
+    - c3
+    - file_source
+    - load_timestamp
+    - run_datehour
+
+info_columns:
+    - record_type 
+    - date
+    - time
+    - error_severity
+    - error_number
+    - placement_id
+    - error_message
+    - ip_address
+    - referrer
+    - iab_flag
+    - user_agent
+    - file_source
+    - load_timestamp
+    - run_datehour
+
+
+
+spot_columns:
+    - record_type
+    - date
+    - time
+    - spotlight_id
+    - advertiser_id
+    - spotlightgroup_id
+    - GUID
+    - queryArgs
+    - browser
+    - ip_address
+    - privacy
+    - track_id
+    - user_agent
+    - spotlight_request_guid
+    - file_source,
+    - load_timestamp
+    - run_datehour
+
+state_columns:
+    - record_type
+    - date
+    - time
+    - event
+    - ipn
+    - iab_flag
+    - config_id
+    - impression_id
+    - ip_address
+    - product
+    - data
+    - impression_guid
+    - file_source
+    - load_timestamp
+    - run_datehour
+
+track_columns:
+    - record_type
+    - date
+    - time
+    - event
+    - spotlight_id
+    - spotlightgroup_id
+    - track_id
+    - ip_address
+    - product
+    - data
+    - spotlight_request_guid
+    - file_source
+    - load_timestamp
+    - run_datehour
+    
+int_columns:
+    - ipa
+    - date_field
+    - time_field
+    - agent_string
+    - idad_index
+    - idcreative_config
+    - placementid
+    - smartclip
+    - idevent_type
+    - sid,guid
+    - unhex_md5_smartclip
+    - options
+    - file_source
+    - load_timestamp
+    - run_datehour
