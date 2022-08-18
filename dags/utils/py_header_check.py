@@ -78,5 +78,6 @@ def pyHeaderCheck(**kwargs):
                 print("| FAIL    | " + "SOURCE: '" + repr(header_item) + "'" + " | CONFIG: '" + repr(item) + "'")
                 print(str(header_item) == str(item))
                 raise ValueError('Throwing FAIL, headers do not match.')
+                return "This doesn't work"
 
         os.remove('./csv_temp' + table_config + str(fileindex) + filetype)

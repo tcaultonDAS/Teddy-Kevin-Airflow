@@ -16,19 +16,18 @@ log_path: 'log/*'
 aws_bucket_name: 'das42-airflow-training'
 
 folder: 
-    - 'stage_click_logs_dev'
-    - 'stage_imp_logs_dev'
-    - 'stage_info_logs_dev'
-    - 'stage_spot_logs_dev'
-    - 'stage_state_logs_dev'
-    - 'stage_track_logs_dev'
-    - 'stage_int_logs_dev'
+    - stage_click_logs_dev
+    - stage_imp_logs_dev
+    - stage_info_logs_dev
+    - stage_spot_logs_dev
+    - stage_state_logs_dev
+    - stage_track_logs_dev
+    - stage_int_logs_dev
 
 data_source: 20190704/15/log
 
 aws_conn_id: 'aws_airflow'
 
-data_source: non_http
 
 header_check:
     app_live:
@@ -40,8 +39,8 @@ header_check:
             ignore_columns: []
             delimiter: ","
 click_columns:
-    - record_type
     - date 
+    - record_type
     - time 
     - idevent_type 
     - placementid 
@@ -107,22 +106,37 @@ imp_columns:
     - run_datehour
 
 info_columns:
-    - record_type 
-    - date
-    - time
-    - error_severity
-    - error_number
-    - placement_id
-    - error_message
-    - ip_address
-    - referrer
-    - iab_flag
-    - user_agent
+    -record_type 
+    -date
+    -time
+    -error_severity
+    -error_number
+    -placement_id
+    -error_message
+    -ip_address
+    -referrer
+    -iab_flag
+    -user_agent
+    file_source
+    load_timestamp
+    run_datehour
+
+int_columns:
+    - ipa
+    - date_field
+    - time_field
+    - agent_string
+    - idad_index
+    - idcreative_config
+    - placementid
+    - smartclip
+    - idevent_type
+    - sid,guid
+    - unhex_md5_smartclip
+    - options
     - file_source
     - load_timestamp
     - run_datehour
-
-
 
 spot_columns:
     - record_type
@@ -172,23 +186,6 @@ track_columns:
     - product
     - data
     - spotlight_request_guid
-    - file_source
-    - load_timestamp
-    - run_datehour
-    
-int_columns:
-    - ipa
-    - date_field
-    - time_field
-    - agent_string
-    - idad_index
-    - idcreative_config
-    - placementid
-    - smartclip
-    - idevent_type
-    - sid,guid
-    - unhex_md5_smartclip
-    - options
     - file_source
     - load_timestamp
     - run_datehour

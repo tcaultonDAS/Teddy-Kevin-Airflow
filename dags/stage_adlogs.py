@@ -52,7 +52,6 @@ def stage_simple_dag():
 
         table_column_names = JOB_ARGS[f'{table}_columns']
 
-
         print(table_column_names)
 
 
@@ -106,9 +105,8 @@ def stage_simple_dag():
             trigger_rule='all_done'
         )
 
+
         count += 1
-
         stage_adlogs_check >> stage_adlogs_header_check >> stage_adlogs_hourly_job >> stage_adlogs_transform >> stage_finish
-
 
 stage_simple_dag = stage_simple_dag()
