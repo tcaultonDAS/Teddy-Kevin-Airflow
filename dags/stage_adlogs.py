@@ -21,7 +21,7 @@ SF_WAREHOUSE = JOB_ARGS["snowflake"]["warehouse"]
 SF_DATABASE = JOB_ARGS["snowflake"]["database"]
 aws_bucket_name = JOB_ARGS['aws_bucket_name']
 aws_conn_id = JOB_ARGS['aws_conn_id']
-filters = JOB_ARGS['header_check']['app_live']['filters']
+filters = JOB_ARGS['header_check']['filters']
 folder  = JOB_ARGS['folder']
 data_source = JOB_ARGS['data_source']
 
@@ -45,14 +45,13 @@ tags=["Airflow2.0"], # If set, this tag is shown in the DAG view of the Airflow 
 def stage_simple_dag():
 
     stage_finish = DummyOperator(task_id="adlogs_snowflake_staging_finish")
-    count = 0
+    count = 0 #this count is used to iterate the different folders for each piece of data listed in the
+    # folder list within the adlogs yaml
 
     # staging ad logs hourly
-    for table in JOB_ARGS["tables"]:
+    for table in JOB_ARGS["tables"]: #this loop iterates through each table that is set to be loaded 
 
-        table_column_names = JOB_ARGS[f'{table}_columns']
-
-        print(table_column_names)
+        table_column_names = JOB_ARGS[f'{table}_columns'] #this creates a list of the names of columns for the table currently being loaded at this stage of the loop
 
 
         stage_adlogs_check = S3KeySensor(
@@ -106,7 +105,7 @@ def stage_simple_dag():
         )
 
 
-        count += 1
+        count += 1 #iterates the above count
         stage_adlogs_check >> stage_adlogs_header_check >> stage_adlogs_hourly_job >> stage_adlogs_transform >> stage_finish
 
 stage_simple_dag = stage_simple_dag()

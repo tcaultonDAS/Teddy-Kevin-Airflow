@@ -24,52 +24,30 @@ folder:
     - stage_track_logs_dev
     - stage_int_logs_dev
 
-data_source: 20190704/15/log
+data_source: 20190704/15/log #this is the end of the file tree for all files listed in the folder list
 
 aws_conn_id: 'aws_airflow'
 
-
+#this header check tree below puts parameters for the headercheck function in place globally
 header_check:
-    app_live:
-        filters:
-            sanitize_capitalization: False
-            trim_whitespace: False
-            remove_whitespace: False
-            remove_underscores: False
-            ignore_columns: []
-            delimiter: ","
+    filters:
+        sanitize_capitalization: False
+        trim_whitespace: False
+        remove_whitespace: False
+        remove_underscores: False
+        ignore_columns: []
+        delimiter: ","
 
-# click_columns:
-#     - Temp
-#     - 20190704    
-#     - '8:10'    
-#     - 244 
-#     - 266 
-#     - 1   
-#     - '55289-964'   
-#     - '#8d9b08' 
-#     - com.webmd.Zamit 
-#     - g   
-#     - 234.221.52.176  
-#     - 1994    
-#     - 2007    
-#     - Dakota Club 
-#     - visa    
-#     - k13AACCaR   
-#     - 'America/New_York'    
-#     - '67-464-6258' 
-#     - 16563   
-#     - rweavers0   
-#     - rweavers0   
-#     - 'Industrial Machinery/Components' 
-#     - 833126198   
-#     - Sarasota    
-#     - Florida 
-#     - United States   
-#     - SedInterdumVenenatis.avi    
-#     - 2019070415  
-#     - 2019070415
 
+# The data used in the internal project does not contain header titles so the adaption of this function will 
+# not work exactly the same as in the Disney Demo.  The table in this yaml "click_columns" artificially fixed this
+# by inputting the first row in each column as header titles so that this header check function passes for the click data
+# before it is imported.  For this same reason, the other six pieces of data imported will fail.
+
+# As an additional note, we have disabled the features that sanitize capitalization, trim whitespace, remove whitespace and
+# remove underscores as this will also make it fail unless we remove these elements from the yaml list.  if you would like
+# to enable these features you will need to be sure your yaml list of columns follows these rules or it
+# will obviously fail.
 click_columns:
     - Temp
     - '20190704'  
