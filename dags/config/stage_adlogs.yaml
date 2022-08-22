@@ -32,42 +32,75 @@ aws_conn_id: 'aws_airflow'
 header_check:
     app_live:
         filters:
-            sanitize_capitalization: True
-            trim_whitespace: True
-            remove_whitespace: True
-            remove_underscores: True
+            sanitize_capitalization: False
+            trim_whitespace: False
+            remove_whitespace: False
+            remove_underscores: False
             ignore_columns: []
             delimiter: ","
+
+# click_columns:
+#     - Temp
+#     - 20190704    
+#     - '8:10'    
+#     - 244 
+#     - 266 
+#     - 1   
+#     - '55289-964'   
+#     - '#8d9b08' 
+#     - com.webmd.Zamit 
+#     - g   
+#     - 234.221.52.176  
+#     - 1994    
+#     - 2007    
+#     - Dakota Club 
+#     - visa    
+#     - k13AACCaR   
+#     - 'America/New_York'    
+#     - '67-464-6258' 
+#     - 16563   
+#     - rweavers0   
+#     - rweavers0   
+#     - 'Industrial Machinery/Components' 
+#     - 833126198   
+#     - Sarasota    
+#     - Florida 
+#     - United States   
+#     - SedInterdumVenenatis.avi    
+#     - 2019070415  
+#     - 2019070415
+
 click_columns:
-    - date 
-    - record_type
-    - time 
-    - idevent_type 
-    - placementid 
-    - ipn 
-    - idcreative 
-    - configuration_id
-    - GUID
-    - iab_flag
-    - ip_address 
-    - rule_match 
-    - custom 
-    - section 
-    - keyword
-    - privacy 
-    - parent_time
-    - device_id 
-    - imp_id
-    - agent_env 
-    - user_agent
-    - impression_guid
-    - unhex_md5_smartclip
-    - idcampaign
-    - c2
-    - c3
-    - file_source
-    - load_timestamp
-    - run_datehour
+    - Temp
+    - '20190704'  
+    - '8:10'    
+    - '244' 
+    - '266' 
+    - '1'   
+    - '55289-964'   
+    - '#8d9b08' 
+    - 'com.webmd.Zamit' 
+    - g   
+    - '234.221.52.176'  
+    - '1994'    
+    - '2007'    
+    - 'Dakota Club' 
+    - visa    
+    - k13AACCaR   
+    - 'America/New_York'    
+    - '67-464-6258' 
+    - '16563'   
+    - rweavers0   
+    - 'rweavers0.1' 
+    - 'Industrial Machinery/Components' 
+    - '833126198'   
+    - Sarasota    
+    - Florida 
+    - 'United States'   
+    - 'SedInterdumVenenatis.avi'    
+    - '2019070415'  
+    - '2019070415.1'
+
 
 imp_columns:
     - record_type
@@ -85,13 +118,14 @@ imp_columns:
     - ip_address
     - rule_match
     - keyword
-    - custom,
+    - custom
     - privacy
     - placement_dt
     - placement_path
     - creative_dt
+    - creative_path
     - domain
-    - parent_time,
+    - parent_time
     - device_id
     - imp_id
     - agent_env
